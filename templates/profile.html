@@ -1,0 +1,152 @@
+
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<script>
+  var usernameglobal;
+  function loadcomment(){
+        //alert("it reached here");
+        var xhttp3 = new XMLHttpRequest();
+        var username = document.getElementById("username").value;
+      //	document.getElementById("username").value = NULL;
+
+        var comment = document.getElementById("comment").value;
+      //	document.getElementById("comment").value = NULL;
+
+        var value = username + " : " + comment;
+          xhttp3.open("POST", "/addComment");
+          xhttp3.setRequestHeader("Content-Type", "application/json");
+          //alert("3");
+          //xmlhttp.send(JSON.stringify({"username":"username1","email_id":"email1","title":"title1", "caption":"caption1"}));
+          //xhttp3.send(JSON.stringify({"username":username,"comment":{"username":username,"comment":comment}}));
+          xhttp3.send(JSON.stringify({"username":overallusername,"comment":[username,comment]}));
+          var form = document.getElementById("form");
+          var p = document.createElement("p");
+          p.innerHTML = value;
+          form.appendChild(p);
+          //alert("4");
+      }
+    function loaddoc(){
+        //var username = "arjun";
+
+        //alert("hello");
+        var xhttp1 = new XMLHttpRequest();
+        xhttp1.onreadystatechange = function(){
+          if(this.readyState == 4 && this.status == 200){
+
+            usernameglobal = this.responseText;
+            usernameglobal = JSON.parse(usernameglobal);
+
+            //alert(usernameglobal);
+            var xhttp2 = new XMLHttpRequest();
+              xhttp2.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                //alert(this.responseText);
+                //var res = JSON.parse(this.responseText);
+                //alert("1111");
+                var res=JSON.parse(this.responseText);
+                for(f in res){
+                //ar res = this.responseText;
+                  var x = document.getElementsByClassName("leftcolumn");
+                  var div_card=document.createElement("div");
+                  div_card.className = "card";
+                  var h2=document.createElement("h2");
+                  var h5=document.createElement("h5");
+                  var img = new Image();
+                  var div_img=document.createElement("div");
+                  var caption=document.createElement("p");
+                  var caption_data=document.createElement("p");
+                  var im="data:image/jpg;base64,";
+                  var im1=String(res[f].image);
+                  im1=im1.slice(2);
+                  //alert(im1);
+                  img.src = im+im1;
+
+                  //img.src="http://localhost:5000/pizza.jpg";
+                  h2.innerHTML = res[f].title;
+                  h5.innerHTML = "heading";
+                  caption.innerHTML = "caption:";
+                  caption_data.innerHTML = res[f].caption;
+
+                  div_card.appendChild(h2);
+                  div_card.appendChild(h5);
+                  div_card.appendChild(caption);
+                  div_card.appendChild(caption_data);
+                  div_card.appendChild(img);
+                  var form = document.createElement("div");
+                  form.id = "form";
+                  var user = document.createElement("input");
+                  user.type = "text";
+                  user.class = "form-control";
+                  user.placeholder = "Enter Username";
+                  user.id = "username";
+                  var comment = document.createElement("textarea");
+                  comment.class = "form-control";
+                  comment.rows = "3";
+                  comment.id = "comment";
+                  var uploadcomment = document.createElement("button");
+                  uploadcomment.type = "submit";
+                  uploadcomment.class = "btn btn-primary btn-block";
+                  uploadcomment.id = "submit";
+                  uploadcomment.onclick = "loadcomment";
+
+
+
+
+                  var el = res[f].comments;
+                  for(k in el){
+                    var pc = document.createElement("p");
+                    pc.innerHTML = el[k].username + ":" + el[k].comment;
+                    form.appendChild(pc);
+                  }
+
+
+
+
+
+                  form.appendChild(user);
+                  form.appendChild(comment);
+                  form.appendChild(uploadcomment);
+                  div_card.appendChild(form);
+                  x[0].appendChild(div_card);
+
+
+
+            }
+              /*var res = JSON.parse(this.responseText);
+              for(f in res){
+                alert(res[f].username);
+              }*/
+              }
+              };
+
+              xhttp2.open("GET", "/listPosts?term="+String(usernameglobal), true);
+              xhttp2.send();
+          }
+        }
+        xhttp1.open("GET", "/return_user", true);
+        xhttp1.send();
+
+
+
+
+      }
+</script>
+<h1 class="title">
+  Welcome!
+</h1>
+<h1>Check out your posts</h1>
+<div class="header">
+  <h1>Blog Name</h1>
+</div>
+<div class="row">
+          <div class="leftcolumn">
+            <button class="button is-block is-info is-large is-fullwidth" id = "submit" onclick="loaddoc()">View</button>
+
+          </div>
+</div>
+
+
+{% endblock %}

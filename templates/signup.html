@@ -1,0 +1,66 @@
+<!-- templates/signup.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+    function loadDoc() {
+        alert("1");
+        var xmlhttp = new XMLHttpRequest();
+        var email =  document.getElementById("email").value;
+        var name =  document.getElementById("name").value;
+        var password =  document.getElementById("password").value;
+
+        //alert(title1);
+        //alert(caption1);
+        //var image1 =  document.getElementById("file").value;
+        //var username1 = "arjunrajesh";
+        //var email1="arjunrajesh@gmail.com";
+        alert("2");
+        xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            alert(this.responseText);
+        }
+        };
+        xmlhttp.open("POST", "/addUsers");
+        xmlhttp.setRequestHeader("Content-Type", "application/json");
+        alert("3");
+        //xmlhttp.send(JSON.stringify({"username":"username1","email_id":"email1","title":"title1", "caption":"caption1"}));
+        xmlhttp.send(JSON.stringify({"username":name,"email_id":email,"password":password}));
+        alert("4");
+    }
+</script>
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Sign Up</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}. Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="/signup">
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="email" name="email" placeholder="Email" autofocus="" id = "email">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="name" placeholder="Name" autofocus="" id = "name">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="password" name="password" placeholder="Password" id = "password">
+                </div>
+            </div>
+
+            <button class="button is-block is-info is-large is-fullwidth" id = "button" onclick="loadDoc()">Sign Up</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

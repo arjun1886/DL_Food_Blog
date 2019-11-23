@@ -1,0 +1,347 @@
+<!-- templates/index.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+	.card {
+	   background-color: black;
+	   padding: 20px;
+	   margin-top: 20px;
+	}
+
+	/* Clear floats after the columns */
+	.row:after {
+	  content: "";
+	  display: table;
+	  clear: both;
+	}
+
+	/* Footer */
+	.footer {
+	  padding: 20px;
+	  text-align: center;
+	  background: #ddd;
+	  margin-top: 20px;
+	}
+	#container{
+	border:solid 1px black;
+	display:none
+	}
+	.fooditem{
+
+	background-color:grey;
+	color:black;
+	}
+	.fooditem:hover{
+
+	background-color:white;
+	}
+	* {
+  box-sizing: border-box;
+}
+
+/* Add a gray background color with some padding */
+
+
+/* Header/Blog Title */
+.header {
+  padding: 30px;
+  font-size: 40px;
+  text-align: center;
+  background: white;
+}
+
+/* Create two unequal columns that floats next to each other */
+/* Left column */
+.leftcolumn {
+  float: left;
+  width: 75%;
+}
+
+/* Right column */
+.rightcolumn {
+  float: left;
+  width: 25%;
+  padding-left: 20px;
+}
+
+/* Fake image */
+.fakeimg {
+  background-color: #aaa;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Add a card effect for articles */
+.card {
+   background-color: white;
+   padding: 20px;
+   margin-top: 20px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #ddd;
+  margin-top: 20px;
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 800px) {
+  .leftcolumn, .rightcolumn {
+    width: 100%;
+    padding: 0;
+  }
+}
+</style>
+<script>
+	var overallusername;
+	function loadcomment(){
+		    //alert("it reached here");
+        var xhttp3 = new XMLHttpRequest();
+        var username = document.getElementById("username").value;
+
+        var comment = document.getElementById("comment").value;
+
+
+        var value = username + " : " + comment;
+					xhttp3.open("POST", "/addComment");
+        	xhttp3.setRequestHeader("Content-Type", "application/json");
+        	//alert("3");
+        	//xmlhttp.send(JSON.stringify({"username":"username1","email_id":"email1","title":"title1", "caption":"caption1"}));
+        	//xhttp3.send(JSON.stringify({"username":username,"comment":{"username":username,"comment":comment}}));
+					xhttp3.send(JSON.stringify({"username":overallusername,"comment":[username,comment]}));
+					var form = document.getElementById("form");
+					var p = document.createElement("p");
+					p.innerHTML = value;
+					//alert(value);
+
+					form.appendChild(p);
+
+        	//alert("4");
+      }
+	function Suggest(){
+		//Maintain a reference to the current object
+			var object=this;
+			this.timer=null;
+			this.search=null;
+			this.container=null;
+			this.url=null;
+			this.xhr=new XMLHttpRequest();
+			this.getTerm=function(){
+				//alert("hello");
+				this.search=document.getElementById("search");
+				this.container=document.getElementById("container");
+			//to invoke the send search function only if the user
+			//pauses for a second
+				if(this.timer){
+					clearTimeout(this.timer);
+				}
+				this.timer=setTimeout(this.sendTerm,1000)
+
+
+			}
+			this.sendTerm=function(){
+				object.url="/suggest?term="+String(object.search.value);
+				//check if the search term is available in cache
+				// i.e. Local Storage
+				if(localStorage.getItem(object.url)){
+					//alert("1");
+					var cacheRes=JSON.parse(localStorage.getItem(object.url))
+					object.populateFood(cacheRes);
+					console.log(localStorage.getItem(object.url));
+					console.log("from browser cache")
+				}
+				else{
+				object.xhr.onreadystatechange=object.showResult;
+				console.log(object.search.value)
+				console.log(this)
+				object.xhr.open("GET",object.url,true);
+				object.xhr.send();
+				}
+			}
+			this.showResult=function(){
+				if(this.readyState==4 && this.status==200){
+					//alert("2");
+					var res=this.responseText;
+					//alert(res);
+					var resO=JSON.parse(res);
+					//Store search result in cache
+					localStorage.setItem(object.url,res);
+					if(resO.length==0){
+
+						object.search.style.backgroundColor="red"
+						object.search.style.fontStyle="italics"
+					}
+					else{
+						object.populateFood(resO);
+					}
+				}
+			}
+			this.populateFood=function(resO){
+				object.container.innerHTML="";
+				for(f in resO){
+
+					var itemDiv=document.createElement("div");
+					itemDiv.innerHTML=resO[f];
+					itemDiv.className="fooditem";
+					itemDiv.onclick=object.setFood;
+					object.container.appendChild(itemDiv)
+					console.log(object.container)
+				}
+				object.container.style.display="block";
+				console.log(object.container)
+
+
+			}
+			this.setFood=function(e){
+				object.search.value=e.target.innerHTML;
+				overallusername = e.target.innerHTML;
+				//alert(e.target.innerHTML);
+				object.search.style.backgroundColor="white";
+				object.container.style.display="none"
+				object.container.innerHTML="";
+				var xhttp2 = new XMLHttpRequest();
+  				xhttp2.onreadystatechange = function() {
+    			if (this.readyState == 4 && this.status == 200) {
+    				//alert(this.responseText);
+						//var res = JSON.parse(this.responseText);
+
+    				var res=JSON.parse(this.responseText);
+						for(f in res){
+							var x = document.getElementsByClassName("leftcolumn");
+	              var div_card=document.createElement("div");
+	              div_card.className = "card";
+	              var h2=document.createElement("h2");
+	              var h5=document.createElement("h5");
+	              var img = new Image();
+	              var div_img=document.createElement("div");
+	              var caption=document.createElement("p");
+	              var caption_data=document.createElement("p");
+								var tag = document.createElement("p");
+                tag.innerHTML = res[f].tag;
+	              var im="data:image/jpg;base64,";
+	              var im1=String(res[f].image);
+	              im1=im1.slice(2);
+	              //alert(im1);
+	              img.src = im+im1;
+								img.height = "100";
+								img.width = "100";
+								img.class = "img";
+	              //img.src="http://localhost:5000/pizza.jpg";
+	              h2.innerHTML = "Title:"+res[f].title;
+	              caption.innerHTML = "Caption:";
+	              caption_data.innerHTML = res[f].caption;
+	              div_card.appendChild(h2);
+	              div_card.appendChild(caption);
+	              div_card.appendChild(caption_data);
+	              div_card.appendChild(img);
+								div_card.appendChild(tag);
+	              var form = document.createElement("div");
+								//form.onsubmit = False;
+								form.id = "form";
+
+	              var user = document.createElement("input");
+	              user.type = "text";
+	              user.class = "form-control";
+	              user.placeholder = "Enter Username";
+	              user.id = "username";
+	              var comment = document.createElement("textarea");
+	              comment.class = "form-control";
+	              comment.rows = "3";
+	              comment.id = "comment";
+	              var uploadcomment = document.createElement("button");
+	              uploadcomment.type = "submit";
+	              uploadcomment.class = "btn btn-primary btn-block";
+	              uploadcomment.id = "submit";
+								uploadcomment.style.height = '20px';
+								uploadcomment.style.width ='20px';
+	             // uploadcomment.onclick = "loadcomment()";
+							  uploadcomment.addEventListener("click", loadcomment);
+								var el = res[f].comment;
+								            for(k in el){
+								               var pc = document.createElement("p");
+								               //pc.innerHTML = el[k].username + ":" + el[k].comment;
+                               pc.innerHTML = el[k][0] + ":" + el[k][1];
+															 form.appendChild(pc);
+								             }
+														 var br1 = document.createElement("br");
+														 var br2 = document.createElement("br");
+														 var br3 = document.createElement("br");
+														 var br4 = document.createElement("br");
+
+	              form.appendChild(user);
+
+								form.appendChild(br1);
+								form.appendChild(br2);
+	              form.appendChild(comment);
+								form.appendChild(br3);
+								form.appendChild(br4);
+	              form.appendChild(uploadcomment);
+	              div_card.appendChild(form);
+	              x[0].appendChild(div_card);
+
+				}
+					/*var res = JSON.parse(this.responseText);
+					for(f in res){
+						alert(res[f].username);
+					}*/
+    			}
+  				};
+  				xhttp2.open("GET", "/listPosts?term="+String(object.search.value), true);
+  				xhttp2.send();
+			}
+
+			}
+
+
+
+
+		var obj=new Suggest();
+
+</script>
+<style>
+	.row{
+		height:100%;
+		width:100%;
+	}
+	.leftcolumn{
+    height:100%;
+    width:100%;
+  }
+  .card{
+    height: 1500px;
+    width: 100%;
+    background-color: powderblue;
+  }
+	.img{
+		height : 20%;
+		width : 20%;
+	}
+</style>
+			<table border="0" cellpadding="0">
+			<tr><td>Username</td><td><input type="text" id="search" onkeypress="obj.getTerm()" /></td></tr>
+			<tr><td></td><td><div id="container"></td></div></tr>
+			</table>
+
+			<div class="row">
+  				<div class="leftcolumn">
+
+
+  			</div>
+
+  			</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,149 @@
+<!-- templates/upload.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<script>
+  var usernameglobal;
+  function loaduser(){
+    //alert("1");
+
+    var xmlhttp2 = new XMLHttpRequest();
+    xmlhttp2.onreadystatechange = function(){
+      if(this.readyState == 4 && this.status == 200){
+
+        var usernameglobal = this.responseText;
+        var usernameglobal = JSON.parse(usernameglobal);
+
+        //alert(usernameglobal);
+        var p2 = document.createElement("p");
+        p2.innerHTML = String(usernameglobal);
+        p2.id = "name";
+        p2.hidden = true;
+        document.getElementById("bye").appendChild(p2);
+      };
+    }
+    xmlhttp2.open("GET", "/return_user", true);
+    xmlhttp2.send();
+  }
+  function loadDoc() {
+
+
+
+        var xmlhttp = new XMLHttpRequest();
+        var title1 =  document.getElementById("title").value;
+        var caption1 =  document.getElementById("caption").value;
+        var image1 =  String(document.getElementById("image").value);
+        var image2=image1.split('\\');
+        var l=image2.length-1;
+        image1=image2[l];
+        var name=document.getElementById("name").innerHTML;
+        var tag = document.getElementById("tag").innerHTML;
+        //alert(title1+"kk");
+        //alert(caption1);
+        //alert(image1);
+        //var image1 =  document.getElementById("file").value;
+        //var username1 = usernameglobal;
+        //alert("username1"+username1);
+        var email1="arjunrajesh@gmail.com";
+        //alert("2");
+        xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var response =this.responseText;
+        }
+      };
+        xmlhttp.open("POST", "/upload_post");
+        xmlhttp.setRequestHeader("Content-Type", "application/json");
+        //alert("3");
+        //xmlhttp.send(JSON.stringify({"username":"username1","email_id":"email1","title":"title1", "caption":"caption1"}));
+        xmlhttp.send(JSON.stringify({"username":name,"email_id":email1,"title":title1, "caption":caption1,"image":image1,"tag":tag}));
+        //alert("4");
+    }
+    function loadTag() {
+        //alert("1");
+        //var xmlhttp = new XMLHttpRequest();
+        //var title1 =  document.getElementById("title").value;
+        //var caption1 =  document.getElementById("caption").value;
+        //var title1 =  document.getElementById("title").value;
+        //var caption1 =  document.getElementById("caption").value;
+        var image1 =  String(document.getElementById("image").value);
+        var image2=image1.split('\\');
+        var l=image2.length-1;
+        image1=image2[l];
+
+
+        //alert(title1);
+        //alert(caption1);
+        //alert(image1);
+        //var image1 =  document.getElementById("file").value;
+        var username1 = "arjun";
+        var email1="arjunrajesh@gmail.com";
+        //alert("2");
+        var xmlhttp= new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+
+            var response =this.responseText;
+            var response=JSON.parse(response);
+            var b1 = document.getElementById("b1");
+            b1.onsubmit = false;
+            //alert(response);
+            var p1 = document.createElement("p");
+            p1.innerHTML = "#"+response;
+            p1.id = "tag";
+            document.getElementById("hello").appendChild(p1);
+          //  document.body.appendChild(p1);
+
+        }
+        };
+        var address="http://localhost:5000/gentag?image="+String(image1);
+        xmlhttp.open("GET", address ,false);
+        //xmlhttp.setRequestHeader("Content-Type", "application/json");
+        //("3");
+        //xmlhttp.send(JSON.stringify({"username":"username1","email_id":"email1","title":"title1", "caption":"caption1"}));
+        //xmlhttp.send(JSON.stringify({"username":username1,"email_id":email1,"title":title1, "caption":caption1,"image":image1}));
+        xmlhttp.send();
+        //alert("4");
+    }
+</script>
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Welcome, {{ name }}! , Upload your food blog experience !!!!</h3>
+    <div class="box">
+
+        <form method="POST" onsubmit="return false" >
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="title" placeholder="Enter the title" autofocus="" id = "title">
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="field">
+                <div class="control">
+							<input type="file" name="file" autocomplete="off"  accept=".png, .jpg, .jpeg" required id = "image">
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="caption" placeholder="Enter the caption" autofocus="" id = "caption">
+                </div>
+            </div>
+
+            <br>
+            <br>
+            <button class = "button is-block is-info is-large is-fullwidth" onclick = "loadTag()" type="button" id = "b1">Generate Tags</button>
+            <br>
+            <br>
+            <div id = "hello"></div>
+            <br>
+            <div id = "bye"></div>
+            <button class="button is-block is-info is-large is-fullwidth"  onclick = "loadDoc()" onsubmit = false>Submit</button>
+
+
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+<!-- templates/base.html -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Flask Auth Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+
+</head>
+<script>
+var usernameglobal;
+function logout() {
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+            //alert("hello");
+            var url = "http://localhost:3000/upload";
+            location.replace(url);
+
+        }
+    };
+
+    //alert("hello");
+    var address="/logout";//change this
+
+    xhttp.open("GET", address , false);
+
+    xhttp.send();
+
+}
+function loaduser(){
+  //alert("1");
+
+  var xmlhttp2 = new XMLHttpRequest();
+  xmlhttp2.onreadystatechange = function(){
+    if(this.readyState == 4 && this.status == 200){
+
+      var usernameglobal = this.responseText;
+      var usernameglobal = JSON.parse(usernameglobal);
+
+      //alert(usernameglobal);
+      var p2 = document.createElement("p");
+      p2.innerHTML = String(usernameglobal);
+      p2.id = "name";
+      p2.hidden = true;
+      document.getElementById("abc").appendChild(p2);
+    };
+  }
+  xmlhttp2.open("GET", "/return_user", true);
+  xmlhttp2.send();
+}
+</script>
+<body onload = "loaduser()">
+    <section class="hero is-primary is-fullheight">
+
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="{{ url_for('index') }}" class="navbar-item">
+                                Home
+                            </a>
+                            <a href="{{ url_for('profile') }}" class="navbar-item">
+                                Profile
+                            </a>
+                            <a href="{{ url_for('login') }}" class="navbar-item">
+                                Login
+                            </a>
+                            <a href="{{ url_for('signup') }}" class="navbar-item">
+                                Sign Up
+                            </a>
+                            <a href="{{ url_for('explore') }}" class="navbar-item">
+                                Explore
+                            </a>
+                            <a href="{{ url_for('upload') }}" class="navbar-item">
+                                Upload
+                            </a>
+                            <a onclick = "logout()" class="navbar-item">
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="hero-body">
+            <div class="container has-text-centered" id = "abc">
+               {% block content %}
+               {% endblock %}
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

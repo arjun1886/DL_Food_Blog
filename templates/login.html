@@ -1,0 +1,73 @@
+<!-- templates/login.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+    function loadDoc() {
+    var xhttp = new XMLHttpRequest();
+    var email = document.getElementById("name").value;
+
+
+    var password = document.getElementById("password").value;
+    //alert(email);
+
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+
+
+            //alert("hello11");
+            var url = "http://localhost:3000/upload";
+            //document.location = url;
+            //window.location.replace(url);
+            //window.location = url;
+            window.location.href = url;
+            window.location.assign(url);
+            //window.location.replace(url);
+
+        }
+    };
+    //"demo_get.asp?t=" + Math.random()
+    var address="/verifyPassword?username="+String(email)+"&password="+String(password);
+    //var address="http://127.0.0.1:3000/test"
+
+    //alert("hello");
+    xhttp.open("GET", address , false);
+
+    xhttp.send();
+
+}
+</script>
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Login</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}. Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="email" id = "name" name="email" placeholder="Your Email" autofocus="">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="password" id = "password" name="password" placeholder="Your Password">
+                </div>
+            </div>
+            <div class="field">
+                <label class="checkbox">
+                    <input type="checkbox">
+                    Remember me
+                </label>
+            </div>
+            <button class="button is-block is-info is-large is-fullwidth" id = "submit" onclick="loadDoc()">Login</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
