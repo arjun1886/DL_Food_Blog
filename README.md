@@ -7,3 +7,5 @@ Food blog website using Vanilla Javascript, HTML, CSS front end and Flask-MongoD
 3) Run api.py, image.py, ml.py as 3 separate flask servers
 4) The REST Apis are part of the api.py flask server.
 5) The image.py server is used as the ML component(Food recognition) in the project.
+
+Type http://localhost:3000/ in your browser and you will arrive at the home page and you can explore the site.
