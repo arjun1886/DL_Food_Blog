@@ -4,6 +4,6 @@ Food blog website using Vanilla Javascript, HTML, CSS front end and Flask-MongoD
 
 1) Setup flask on your machine
 2) Setup MongoDB and create the collections 
-3) Run api.py, image.py, ml.py as 3 separate flask servers on different ports
-4) The REST Apis are stored on the api.py flask server.
+3) Run api.py, image.py, ml.py as 3 separate flask servers
+4) The REST Apis are part of the api.py flask server.
 5) The image.py server is used as the ML component(Food recognition) in the project.
