@@ -24,7 +24,7 @@ def file_is_empty(path):
     else:
       return 0
 myclient = MongoClient("mongodb://localhost:27017/")
-mydb = myclient["WebTech"]
+mydb = myclient["FoodBlog"]
 
 @app.route('/')
 def index():
