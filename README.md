@@ -6,10 +6,10 @@ Food blog website using Vanilla Javascript, HTML, CSS front end and Flask-MongoD
 2) Setup MongoDB
 3) Create the Database named ‘FoodBlog’ in MongoDB 
 
-Create the following collections :
+   Create the following collections inside the aforementioned database:
 
-1. Users
-2. User_Posts
+   1. Users
+   2. User_Posts
 
 4) Run api.py, image.py, ml.py as 3 separate flask servers
 5) The REST Apis are part of the api.py flask server.
